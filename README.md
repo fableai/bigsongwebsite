@@ -4,35 +4,42 @@ A modern personal website showcasing photography, design works, and blog content
 
 ## Features
 
-- Photography Portfolio with Unsplash-style masonry layout
-- Design Works showcase with interactive cards
+- Photography portfolio with Unsplash-style masonry layout
+- Design works showcase with card layout
 - Blog system with MDX support
-- Full-text search across all content
-- Tag-based filtering and categorization
+- Tag-based filtering and search
 - Admin interface for content management
 - Aliyun OSS integration for image storage
 
 ## Tech Stack
 
-- Frontend: Next.js 14+, TypeScript, Tailwind CSS
-- Image Storage: Aliyun OSS
-- Styling: Tailwind CSS, Radix UI
-- Content: MDX for blog posts
-- Search: Full-text search implementation
-- Authentication: NextAuth.js for admin access
+- Next.js 13+
+- TypeScript
+- Tailwind CSS
+- Radix UI
+- PostgreSQL
+- Aliyun OSS
 
 ## Development
 
 ```bash
-# Install dependencies
 npm install
-
-# Set up environment variables
-cp .env.example .env.local
-
-# Run development server
 npm run dev
 ```
+
+## Deployment
+
+```bash
+npm run build
+npm run start
+```
+
+## Learn More
+
+To learn more about Next.js, take a look at the following resources:
+
+- [Next.js Documentation](https://nextjs.org/docs)
+- [Learn Next.js](https://nextjs.org/learn)
 
 ## License
 
