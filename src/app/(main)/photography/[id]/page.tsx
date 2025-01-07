@@ -32,11 +32,18 @@ async function getPhoto(id: string) {
     if (client) {
       try {
         const result = await client.get(`photos/${id}`);
-        return {
-          url: result.url,
-          title: id,
-          description: 'Photo description',
-        };
+        // Parse the content as JSON if it's stored that way
+        try {
+          const photoData = JSON.parse(result.content.toString());
+          return photoData;
+        } catch {
+          // If not JSON, assume it's just an image file
+          return {
+            url: `${process.env.NEXT_PUBLIC_OSS_ENDPOINT}/photos/${id}`,
+            title: id.replace(/\.[^/.]+$/, ''), // Remove file extension
+            description: 'Photo description',
+          };
+        }
       } catch (error) {
         console.error('Error fetching photo:', error);
       }
@@ -60,9 +67,11 @@ export async function generateStaticParams() {
           prefix: 'photos/',
           maxKeys: 1000,
         });
-        return result.objects.map(obj => ({
-          id: obj.name.replace('photos/', ''),
-        }));
+        if (result.objects) {
+          return result.objects.map(obj => ({
+            id: obj.name.replace('photos/', ''),
+          }));
+        }
       } catch (error) {
         console.error('Error generating photo params:', error);
       }
