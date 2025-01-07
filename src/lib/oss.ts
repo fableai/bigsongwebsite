@@ -33,8 +33,8 @@ export async function listOSSFiles(prefix?: string): Promise<string[]> {
     const result = await ossClient.list({
       prefix,
       'max-keys': 1000,
-    }, {});
-    return result.objects?.map(obj => obj.url) || [];
+    });
+    return result.objects.map(obj => obj.url);
   } catch (error) {
     console.error('Error listing OSS files:', error);
     throw new Error('Failed to list files');
