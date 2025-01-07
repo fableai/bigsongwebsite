@@ -1,20 +1,11 @@
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
-import { ossClient } from '@/lib/oss';
+import { getOSSClient } from '@/lib/oss';
 
 interface PhotoPageProps {
   params: {
     id: string;
   };
-}
-
-async function getPhoto(id: string) {
-  try {
-    const photo = await ossClient.get(`photos/${id}`);
-    return JSON.parse(photo.content.toString());
-  } catch (error) {
-    return null;
-  }
 }
 
 // Static photo data for build time
@@ -35,18 +26,46 @@ const STATIC_PHOTOS = [
   },
 ];
 
+async function getPhoto(id: string) {
+  if (process.env.NODE_ENV === 'development') {
+    const client = getOSSClient();
+    if (client) {
+      try {
+        const result = await client.get(`photos/${id}`);
+        return {
+          url: result.url,
+          title: id,
+          description: 'Photo description',
+        };
+      } catch (error) {
+        console.error('Error fetching photo:', error);
+      }
+    }
+  }
+
+  // Use static data during build
+  const photo = STATIC_PHOTOS.find(p => p.id === id);
+  if (!photo) {
+    throw new Error('Photo not found');
+  }
+  return photo;
+}
+
 export async function generateStaticParams() {
   if (process.env.NODE_ENV === 'development') {
-    try {
-      const result = await ossClient.list({
-        prefix: 'photos/',
-        maxKeys: 1000,
-      });
-      return result.objects.map(obj => ({
-        id: obj.name.replace('photos/', ''),
-      }));
-    } catch (error) {
-      console.error('Error generating photo params:', error);
+    const client = getOSSClient();
+    if (client) {
+      try {
+        const result = await client.list({
+          prefix: 'photos/',
+          maxKeys: 1000,
+        });
+        return result.objects.map(obj => ({
+          id: obj.name.replace('photos/', ''),
+        }));
+      } catch (error) {
+        console.error('Error generating photo params:', error);
+      }
     }
   }
   // Fallback to static data for production build
