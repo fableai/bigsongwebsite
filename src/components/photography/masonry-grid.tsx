@@ -6,9 +6,9 @@ import { cn } from '@/lib/utils';
 interface Photo {
   id: string;
   title: string;
-  description: string;
+  description?: string;
   url: string;
-  tags: string[];
+  tags?: string[];
   metadata?: {
     camera?: string;
     lens?: string;
@@ -37,9 +37,9 @@ export const MasonryGrid: React.FC<MasonryGridProps> = ({ photos }) => {
               <div className="absolute inset-0 bg-black bg-opacity-0 transition-opacity duration-300 group-hover:bg-opacity-40" />
               <div className="absolute inset-0 flex flex-col justify-end p-4 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
                 <h3 className="text-lg font-semibold text-white">{photo.title}</h3>
-                <p className="mt-2 text-sm text-white">{photo.description}</p>
+                {photo.description && <p className="mt-2 text-sm text-white">{photo.description}</p>}
                 <div className="mt-2 flex flex-wrap gap-2">
-                  {photo.tags.map((tag) => (
+                  {photo.tags?.map((tag) => (
                     <span
                       key={tag}
                       className="rounded-full bg-white bg-opacity-20 px-2 py-1 text-xs text-white"
