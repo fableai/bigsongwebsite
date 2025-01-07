@@ -12,18 +12,37 @@ interface DesignWork {
   date: string;
 }
 
-async function getDesignWorkById(id: string): Promise<DesignWork | null> {
-  // Placeholder data - replace with actual data fetching
-  const work = {
-    id,
-    title: 'Sample Design Work',
-    description: 'A detailed description of the design work',
-    content: 'Full content of the design work...',
-    images: ['https://example.com/image1.jpg'],
-    tags: ['ui', 'web'],
+// Static design work data for build time
+const DESIGN_WORKS = [
+  {
+    id: 'ui-design-system',
+    title: 'UI Design System',
+    description: 'A comprehensive design system for web applications',
+    content: 'Detailed content about the design system...',
+    images: ['https://example.com/design1.jpg'],
+    tags: ['ui', 'design-system'],
     date: '2024-01-01',
-  };
-  return work;
+  },
+  {
+    id: 'brand-identity',
+    title: 'Brand Identity Project',
+    description: 'Complete brand identity design for a tech startup',
+    content: 'Detailed content about the brand identity project...',
+    images: ['https://example.com/design2.jpg'],
+    tags: ['branding', 'identity'],
+    date: '2024-01-02',
+  },
+];
+
+export async function generateStaticParams() {
+  return DESIGN_WORKS.map((work) => ({
+    id: work.id,
+  }));
+}
+
+async function getDesignWorkById(id: string): Promise<DesignWork | null> {
+  const work = DESIGN_WORKS.find(w => w.id === id);
+  return work || null;
 }
 
 export default async function DesignWorkPage({

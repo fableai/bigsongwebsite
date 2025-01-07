@@ -32,7 +32,7 @@ export async function listOSSFiles(prefix?: string): Promise<string[]> {
   try {
     const result = await ossClient.list({
       prefix,
-      'max-keys': 1000,
+      maxKeys: 1000,
     });
     return result.objects.map(obj => obj.url);
   } catch (error) {

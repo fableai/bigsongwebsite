@@ -17,6 +17,21 @@ async function getPhoto(id: string) {
   }
 }
 
+export async function generateStaticParams() {
+  try {
+    const result = await ossClient.list({
+      prefix: 'photos/',
+      maxKeys: 1000,
+    });
+    return result.objects.map(obj => ({
+      id: obj.name.replace('photos/', ''),
+    }));
+  } catch (error) {
+    console.error('Error generating photo params:', error);
+    return [];
+  }
+}
+
 export default async function PhotoPage({ params }: PhotoPageProps) {
   const photo = await getPhoto(params.id);
 
