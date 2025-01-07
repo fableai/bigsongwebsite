@@ -17,19 +17,42 @@ async function getPhoto(id: string) {
   }
 }
 
+// Static photo data for build time
+const STATIC_PHOTOS = [
+  {
+    id: 'sample-1',
+    title: 'Sample Photo 1',
+    description: 'A beautiful landscape photo',
+    url: 'https://example.com/photo1.jpg',
+    tags: ['landscape', 'nature'],
+  },
+  {
+    id: 'sample-2',
+    title: 'Sample Photo 2',
+    description: 'Urban architecture',
+    url: 'https://example.com/photo2.jpg',
+    tags: ['urban', 'architecture'],
+  },
+];
+
 export async function generateStaticParams() {
-  try {
-    const result = await ossClient.list({
-      prefix: 'photos/',
-      maxKeys: 1000,
-    });
-    return result.objects.map(obj => ({
-      id: obj.name.replace('photos/', ''),
-    }));
-  } catch (error) {
-    console.error('Error generating photo params:', error);
-    return [];
+  if (process.env.NODE_ENV === 'development') {
+    try {
+      const result = await ossClient.list({
+        prefix: 'photos/',
+        maxKeys: 1000,
+      });
+      return result.objects.map(obj => ({
+        id: obj.name.replace('photos/', ''),
+      }));
+    } catch (error) {
+      console.error('Error generating photo params:', error);
+    }
   }
+  // Fallback to static data for production build
+  return STATIC_PHOTOS.map(photo => ({
+    id: photo.id,
+  }));
 }
 
 export default async function PhotoPage({ params }: PhotoPageProps) {

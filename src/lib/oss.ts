@@ -5,7 +5,8 @@ export const ossClient = new OSS({
   accessKeyId: process.env.OSS_ACCESS_KEY!,
   accessKeySecret: process.env.OSS_ACCESS_SECRET!,
   bucket: process.env.NEXT_PUBLIC_OSS_BUCKET!,
-  endpoint: process.env.NEXT_PUBLIC_OSS_ENDPOINT!,
+  endpoint: process.env.NEXT_PUBLIC_OSS_ENDPOINT?.replace(/^https?:\/\//, ''),
+  secure: true,
 });
 
 export async function uploadToOSS(file: File): Promise<string> {
